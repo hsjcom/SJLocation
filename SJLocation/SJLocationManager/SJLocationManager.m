@@ -102,13 +102,12 @@
         }
         _manager.delegate = self;
         _manager.desiredAccuracy = kCLLocationAccuracyBest;
-        _manager.distanceFilter = 100;
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
             [_manager requestAlwaysAuthorization];
         }
+        _manager.distanceFilter = 100;
         
         [_manager startUpdatingLocation];
-        
     } else {
         UIAlertView *alvertView=[[UIAlertView alloc]initWithTitle:@"提示" message:@"需要开启定位服务,请到设置->隐私,打开定位服务" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil];
         [alvertView show];
