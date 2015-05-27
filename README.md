@@ -5,9 +5,9 @@
 * `CLLocationManager`
 
 ```
-    iOS8 在info.plist添加
-    NSLocationAlwaysUsageDescription Boolean ＝ YES     //将根据您的地理位置信息，提供精准服务
-    NSLocationWhenInUseUsageDescription Boolean ＝ YES  //若不允许，您将无法使用地图定位等相关的功能
+    iOS8 在info.plist添加 （value可缺省）
+    NSLocationAlwaysUsageDescription string     //将根据您的地理位置信息，提供精准服务
+    NSLocationWhenInUseUsageDescription string  //若不允许，您将无法使用地图定位等相关的功能
 ```
 
 ***
