@@ -16,17 +16,33 @@
  *  NSLocationWhenInUseUsageDescription string   //若不允许，您将无法使用地图定位等相关的功能
  */
 
+@protocol LocationErrorDelegate <NSObject>
+
+@optional
+
+//定位失败
+- (void)locationError:(NSError *)error;
+
+//不允许使用定位服务
+- (void)locationServicesNotEnabled;
+
+@end
+
+
+
+
 typedef void (^LocationBlock) (CLLocationCoordinate2D locationCorrrdinate);
 typedef void (^NSStringBlock) (NSString *cityString);
 typedef void (^NSStringBlock) (NSString *addressString);
 
 @interface SJLocationManager : NSObject<CLLocationManagerDelegate>
 @property (nonatomic) CLLocationCoordinate2D lastCoordinate;
-@property (nonatomic, strong)NSString *city;
+@property (nonatomic, strong) NSString *city;
 @property (nonatomic, strong) NSString *address;
+@property (nonatomic, strong) NSString *longitude;
+@property (nonatomic, strong) NSString *latitude;
 
-@property(nonatomic, assign)float latitude;
-@property(nonatomic, assign)float longitude;
+@property (nonatomic, weak) id<LocationErrorDelegate> erroeDelegate;
 
 
 + (SJLocationManager *)shareManager;
@@ -45,5 +61,10 @@ typedef void (^NSStringBlock) (NSString *addressString);
  *  获取详细地址
  */
 - (void)getAddress:(NSStringBlock)addressBlock;
+
+/**
+ *  是否允许使用定位服务
+ */
++ (BOOL)locationServicesEnabled;
 
 @end

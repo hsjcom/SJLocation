@@ -59,11 +59,17 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
 
+    _longitude = [NSString stringWithFormat:@"%lf", newLocation.coordinate.longitude];    _latitude = [NSString stringWithFormat:@"%lf", newLocation.coordinate.latitude];
+    
     CLGeocoder *geocoder =[[CLGeocoder alloc] init];
     [geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
          if (placemarks.count > 0) {
              CLPlacemark *placemark = [placemarks objectAtIndex:0];
-             _city = [NSString stringWithFormat:@"%@ %@", placemark.administrativeArea, placemark.locality];
+             if (placemark.locality != nil) {
+                 _city = [NSString stringWithFormat:@"%@", placemark.locality];
+             } else { //when locality = nil ，use subLocality.
+                 _city = [NSString stringWithFormat:@"%@", placemark.subLocality];
+             }
              
              _address = [NSString stringWithFormat:@"%@ %@ %@ %@ %@ %@", placemark.country, placemark.administrativeArea, placemark.locality, placemark.subLocality, placemark.thoroughfare, placemark.subThoroughfare];
          }
@@ -91,12 +97,16 @@
 
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error {
+    if (_erroeDelegate && [_erroeDelegate respondsToSelector:@selector(locationError:)]) {
+        [_erroeDelegate locationError:error];
+    }
+    
     [manager stopUpdatingLocation];
     [self stopLocation];
 }
 
 - (void)startLocation {
-    if([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+    if([SJLocationManager locationServicesEnabled]) {
         if (!_manager) {
             _manager = [[CLLocationManager alloc]init];
         }
@@ -108,9 +118,20 @@
         _manager.distanceFilter = 100;
         
         [_manager startUpdatingLocation];
+        
     } else {
-        UIAlertView *alvertView=[[UIAlertView alloc]initWithTitle:@"提示" message:@"需要开启定位服务,请到设置->隐私,打开定位服务" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil];
-        [alvertView show];
+        if (_erroeDelegate && [_erroeDelegate respondsToSelector:@selector(locationServicesNotEnabled)]) {
+            [_erroeDelegate locationServicesNotEnabled];
+        }
+        
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+            UIAlertView *alvertView = [[UIAlertView alloc]initWithTitle:@"需要开启定位服务" message:@"请在设置 - 隐私 - 定位服务中开启定位" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"开启定位", nil];
+            alvertView.tag = 1434696837;
+            [alvertView show];
+        } else {
+            UIAlertView *alvertView = [[UIAlertView alloc]initWithTitle:@"需要开启定位服务" message:@"请在设置 - 隐私 - 定位服务中开启定位" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alvertView show];
+        }
     }
 }
 
@@ -118,5 +139,22 @@
     _manager = nil;
 }
 
++ (BOOL)locationServicesEnabled {
+    if([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 1434696837 && buttonIndex == 1) {
+        NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        if ([[UIApplication sharedApplication] canOpenURL:url]) {
+            [[UIApplication sharedApplication] openURL:url];
+        }
+    }
+}
 
 @end
