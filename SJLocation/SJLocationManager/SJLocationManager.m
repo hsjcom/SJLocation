@@ -59,9 +59,10 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
 
-    _longitude = [NSString stringWithFormat:@"%lf", newLocation.coordinate.longitude];    _latitude = [NSString stringWithFormat:@"%lf", newLocation.coordinate.latitude];
+    _longitude = [NSString stringWithFormat:@"%lf", newLocation.coordinate.longitude];
+    _latitude = [NSString stringWithFormat:@"%lf", newLocation.coordinate.latitude];
     
-    CLGeocoder *geocoder =[[CLGeocoder alloc] init];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     [geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
          if (placemarks.count > 0) {
              CLPlacemark *placemark = [placemarks objectAtIndex:0];

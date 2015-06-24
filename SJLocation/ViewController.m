@@ -54,7 +54,6 @@
     [locationBtn3 setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
     [locationBtn3 addTarget:self action:@selector(getAddress) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:locationBtn3];
-    
 }
 
 - (void)getLocationCoordinate {
