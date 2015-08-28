@@ -62,9 +62,15 @@
      * 英文系统下强制显示中文地址信息
      */
     //保存 Device 的现语言 (英语 法语 ，，，)
+    NSArray *languageArray = [NSLocale preferredLanguages];
+    NSString *language = [languageArray objectAtIndex:0];
+    
     NSMutableArray *userDefaultLanguages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
-    // 强制 成 简体中文
-    [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithObjects:@"zh-hans", nil] forKey:@"AppleLanguages"];
+    
+    if (![language isEqualToString:@"zh-Hans"]) {
+        // 强制 成 简体中文
+        [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithObjects:@"zh-Hans", nil] forKey:@"AppleLanguages"];
+    }
 
     _longitude = [NSString stringWithFormat:@"%lf", newLocation.coordinate.longitude];
     _latitude = [NSString stringWithFormat:@"%lf", newLocation.coordinate.latitude];
@@ -92,8 +98,11 @@
              _addressBlock = nil;
          }
         
-        //恢复当前系统语言
-        [[NSUserDefaults standardUserDefaults] setObject:userDefaultLanguages forKey:@"AppleLanguages"];
+        if (![language isEqualToString:@"zh-Hans"]) {
+            //恢复当前系统语言
+            [[NSUserDefaults standardUserDefaults] setObject:userDefaultLanguages forKey:@"AppleLanguages"];
+        }
+        
      }];
     
     _lastCoordinate = CLLocationCoordinate2DMake(newLocation.coordinate.latitude, newLocation.coordinate.longitude);
