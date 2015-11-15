@@ -35,17 +35,21 @@ typedef void (^LocationBlock) (CLLocationCoordinate2D locationCorrrdinate);
 typedef void (^NSStringBlock) (NSString *cityString);
 typedef void (^NSStringBlock) (NSString *addressString);
 
-@interface SJLocationManager : NSObject<CLLocationManagerDelegate>
+@interface SJLocationManager : NSObject<CLLocationManagerDelegate, MKMapViewDelegate>
 @property (nonatomic) CLLocationCoordinate2D lastCoordinate;
 @property (nonatomic, strong) NSString *city;
 @property (nonatomic, strong) NSString *address;
 @property (nonatomic, strong) NSString *longitude;
 @property (nonatomic, strong) NSString *latitude;
 
+@property (nonatomic, assign) BOOL isShowAllert;
+
 @property (nonatomic, weak) id<LocationErrorDelegate> erroeDelegate;
 
 
 + (SJLocationManager *)shareManager;
+
+- (void)startLocation;
 
 /**
  *  获取坐标(经纬度)
