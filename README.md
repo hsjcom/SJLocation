@@ -2,7 +2,8 @@
 ##LocationManager
 ###获取当前的地理位置
 
-* `CLLocationManager`
+* `CLLocationManager` `MKMapView` 
+* 2种方法，`MKMapView`修正`CLLocationManager`中国地区定位火星坐标偏移
 
 ```
     iOS8 在info.plist添加 （value可缺省）
