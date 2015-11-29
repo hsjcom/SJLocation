@@ -23,6 +23,12 @@
 
 @implementation SJLocationManager
 
+- (void)dealloc {
+    [self setErroeDelegate:nil];
+    [self stopLocation];
+    [self stopLocationUseMap];
+}
+
 + (SJLocationManager *)shareManager {
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
@@ -118,6 +124,7 @@
 }
 
 - (void)stopLocation {
+    _manager.delegate = nil;
     _manager = nil;
 }
 
@@ -197,13 +204,13 @@
 -(void)startLocationUseMap {
     if([SJLocationManager locationServicesEnabled]) {
         if (_mapView) {
-            _mapView = nil;
+            [self stopLocationUseMap];
         }
         _mapView = [[MKMapView alloc] init];
         _mapView.delegate = self;
         _mapView.showsUserLocation = YES;
         _mapView.frame = CGRectMake(0, 0, 1, 1); //iOS8
-        [[[[UIApplication sharedApplication] delegate] window] addSubview:_mapView];
+        [[[[UIApplication sharedApplication] delegate] window].rootViewController.view addSubview:_mapView];
         
     } else {
         _city = nil;
@@ -229,6 +236,11 @@
 
 - (void)stopLocationUseMap {
     _mapView.showsUserLocation = NO;
+    _mapView.userTrackingMode  = MKUserTrackingModeNone;
+    [_mapView.layer removeAllAnimations];
+    [_mapView removeAnnotations:_mapView.annotations];
+    [_mapView removeOverlays:_mapView.overlays];
+    _mapView.delegate = nil;
     [_mapView removeFromSuperview];
     _mapView = nil;
 }
