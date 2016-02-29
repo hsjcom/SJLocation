@@ -140,7 +140,7 @@
     
     NSMutableArray *userDefaultLanguages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
     
-    if (![language isEqualToString:@"zh-Hans"]) {
+    if (![language isEqualToString:@"zh-Hans"]){
         // 强制 成 简体中文
         [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithObjects:@"zh-Hans", nil] forKey:@"AppleLanguages"];
     }
