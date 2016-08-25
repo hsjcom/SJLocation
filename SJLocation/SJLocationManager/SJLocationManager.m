@@ -6,6 +6,12 @@
 //  Copyright (c) 2015年 Soldier. All rights reserved.
 //
 
+/**
+ * CLLocationManager:获取的是标准 地球坐标 (WGS84)
+ * MKMapView：基于地图，所以在中国获取到的是 火星坐标 (GCJ-02)
+ * 在中国，使用CLLocationManager获取到的坐标去获取地图上的地址会有偏差
+ **/
+
 #import "SJLocationManager.h"
 
 @interface SJLocationManager (){
@@ -63,6 +69,8 @@
 }
 
 - (void)startLocation {
+    //可二选一使用
+    
     [self startLocationUseLocation];
     
     [self startLocationUseMap];
